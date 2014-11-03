@@ -8,6 +8,6 @@ exports['returns the right dependencies'] = function(test){
 
     rsnpm.getAllDependencies(module, function (err, results) {
         test.strictEqual(24, results.length, 'Should have 24 dependencies');
-        test.done()
+        test.done();
     });
 };
