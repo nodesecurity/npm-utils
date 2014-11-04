@@ -8,7 +8,7 @@ var client = new RegClient({
 
 var allDependencies = {};
 
-var getAllDependencies = function (module, callback) {
+var _getAllDependencies = function (module, callback) {
 
     client.get('/' + module.name, function (err, pkg) {
         if (err) {
@@ -36,7 +36,7 @@ var getAllDependencies = function (module, callback) {
             callback();
         }
         deps.forEach(function (dep) {
-            getAllDependencies({name: dep}, function () {
+            _getAllDependencies({name: dep}, function () {
                 depcnt++;
                 if (depcnt === deps.length) {
                     callback(err, allDependencies);
@@ -46,8 +46,15 @@ var getAllDependencies = function (module, callback) {
     });
 };
 
-module.exports.getAllDependencies = getAllDependencies;
+var getAllDependencies = function (module, callback) {
+    _getAllDependencies(module, function (err, results) {
+        var deps = [];
+        // Clean up the data for Tom
+        Object.keys(results).forEach(function (key) {
+            deps.push({name: key, value: results[key]});
+        });
+        callback(null, deps);
+    });
+};
 
-//getAllDependencies({name: 'helmet', version: '0.5.0'}, function (err, results) {
-//    console.log(results)
-//});
+module.exports.getAllDependencies = getAllDependencies;
