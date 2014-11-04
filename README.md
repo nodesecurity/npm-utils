@@ -3,4 +3,9 @@
 
 ## getAllDependencies = function (module, callback)
 
-Returns 
+module is an object that must contain a name and may optionally contain a version.
+
+{
+    name: 'helmet',
+    version: '0.2.0'
+}

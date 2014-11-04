@@ -16,12 +16,14 @@
   "author": "^lift security",
   "license": "ISC",
   "dependencies": {
-    "async": "^0.9.0",
-    "jshint": "^2.5.8",
-    "precommit-hook": "^1.0.7",
-    "wreck": "^5.0.1"
+    "silent-npm-registry-client": "0.0.1"
   },
   "devDependencies": {
-    "nodeunit": "^0.9.0"
+    "nodeunit": "^0.9.0",
+    "jshint": "^2.5.8",
+    "precommit-hook": "^1.0.7"
+  },
+  "publishConfig": {
+    "registry": "https://nlfpm.andyet.net/_private"
   }
 }

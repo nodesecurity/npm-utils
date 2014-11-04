@@ -1,109 +1,53 @@
-var Wreck = require('wreck');
-var Async = require('async');
+var RegClient = require('silent-npm-registry-client');
+var os = require('os');
 
-var internals = {};
+var client = new RegClient({
+  registry: 'http://registry.npmjs.org/',
+  cache: os.tmpDir() + '/requiresafe'
+});
 
-internals.getDependents = function (module, callback) {
+var allDependencies = {};
 
-    var handleResponse = function (err, response, payload) {
+var getAllDependencies = function (module, callback) {
 
-        if (err || response.statusCode !== 200) {
-            return callback(new Error('Could not find module in npm'), null, null);
+    client.get('/' + module.name, function (err, pkg) {
+        if (err) {
+            throw err;
         }
 
-        try {
-            payload = JSON.parse(payload);
-
-        } catch (e) {
-            return callback(new Error('There was an error parsing the JSON response from npm'), null, null);
+        allDependencies[module.name] = pkg['dist-tags'].latest;
+        // grab latest
+        var version = module.version;
+        if (!module.version) {
+            version = pkg['dist-tags'].latest;
         }
+        var doc = pkg.versions[version];
+        var modules = {};
 
-        if (typeof payload.name !== 'string' || typeof payload.version !== 'string') {
-            return callback(new Error('Malformed JSON response from npm'), null, null);
+        if (doc.dependencies) {
+            modules = doc.dependencies;
         }
+        // Ignore devDependencies for now
 
-        var dependencies = [];
+        var deps = Object.keys(modules);
 
-        if (payload.dependencies) {
-            var dependencyKeys = Object.keys(payload.dependencies);
-            for (var i = 0; i < dependencyKeys.length; i++) {
-                dependencies.push({
-                    name: dependencyKeys[i],
-                    version: payload.dependencies[dependencyKeys[i]]
-                });
-            }
+        var depcnt = 0;
+        if (deps.length === 0) {
+            callback();
         }
-
-        if (payload.devDependencies) {
-            var devDependencyKeys = Object.keys(payload.devDependencies);
-            for (var j = 0; j < payload.devDependencies.length; j++) {
-                dependencies.push({
-                    name: devDependencyKeys[j],
-                    version: payload.devDependencies[devDependencyKeys[j]]
-                });
-            }
-        }
-
-        return callback(null, {
-            name: payload.name,
-            version: payload.version
-        }, dependencies);
-    };
-
-    Wreck.get('https://registry.npmjs.org/' + module.name + '/' + module.version, handleResponse);
-};
-
-
-exports.getAllDependencies = function (module, callback) {
-
-    if (typeof module !== 'object') {
-        return callback(new Error('module is not of type object'), null);
-    }
-
-    if (typeof module.name !== 'string') {
-        return callback(new Error('module.name is not type string'), null);
-    }
-
-    if (typeof module.version !== 'string') {
-        return callback(new Error('module.version is not type string'), null);
-    }
-
-    var checked = {};
-    var modules = [];
-    var q = {};
-    var qError = null;
-
-    var processModules = function (inProgress, cb) {
-
-        internals.getDependents(inProgress, function (err, resolved, dependencies) {
-
-            if (err) {
-                qError = err;
-                q.kill();
-                return cb();
-            }
-
-            var setKey = resolved.name + '!' + resolved.version;
-            if (checked.hasOwnProperty(setKey)) {
-                return cb();
-            }
-
-            checked[setKey] = true;
-            q.push(dependencies);
-            modules.push(resolved);
-            return cb();
+        deps.forEach(function (dep) {
+            getAllDependencies({name: dep}, function () {
+                depcnt++;
+                if (depcnt === deps.length) {
+                    callback(err, allDependencies);
+                }
+            });
         });
-    };
-
-    var end = function () {
-
-        if (q.running() === 0 && q.length() === 0) {
-            return callback(qError, modules);
-        }
-    };
-
-    q = Async.queue(processModules, 10);
-    q.push(module);
-    q.drain = end;
+    });
 };
 
+module.exports.getAllDependencies = getAllDependencies;
+
+//getAllDependencies({name: 'helmet', version: '0.5.0'}, function (err, results) {
+//    console.log(results)
+//});
