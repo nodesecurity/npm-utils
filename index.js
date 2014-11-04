@@ -51,7 +51,7 @@ var getAllDependencies = function (module, callback) {
         var deps = [];
         // Clean up the data for Tom
         Object.keys(results).forEach(function (key) {
-            deps.push({name: key, value: results[key]});
+            deps.push({name: key, version: results[key]});
         });
         callback(null, deps);
     });
