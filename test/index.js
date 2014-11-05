@@ -7,6 +7,7 @@ exports['returns the right dependencies'] = function(test){
     };
 
     rsnpm.getAllDependencies(module, function (err, results) {
+        console.log(results)
         test.strictEqual(3, results.length, 'Should have 3 dependencies');
         test.done();
     });

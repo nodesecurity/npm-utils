@@ -6,47 +6,48 @@ var client = new RegClient({
   cache: os.tmpDir() + '/requiresafe'
 });
 
-var allDependencies = {};
-
-var _getAllDependencies = function (module, callback) {
-
-    client.get('/' + module.name, function (err, pkg) {
-        if (err) {
-            throw err;
-        }
-
-        allDependencies[module.name] = pkg['dist-tags'].latest;
-        // grab latest
-        var version = module.version;
-        if (!module.version) {
-            version = pkg['dist-tags'].latest;
-        }
-        var doc = pkg.versions[version];
-        var modules = {};
-
-        if (doc.dependencies) {
-            modules = doc.dependencies;
-        }
-        // Ignore devDependencies for now
-
-        var deps = Object.keys(modules);
-
-        var depcnt = 0;
-        if (deps.length === 0) {
-            callback();
-        }
-        deps.forEach(function (dep) {
-            _getAllDependencies({name: dep}, function () {
-                depcnt++;
-                if (depcnt === deps.length) {
-                    callback(err, allDependencies);
-                }
-            });
-        });
-    });
-};
 
 var getAllDependencies = function (module, callback) {
+    var allDependencies = {};
+
+    var _getAllDependencies = function (module, callback) {
+
+        client.get('/' + module.name, function (err, pkg) {
+            if (err) {
+                throw err;
+            }
+
+            allDependencies[module.name] = pkg['dist-tags'].latest;
+            // grab latest
+            var version = module.version;
+            if (!module.version) {
+                version = pkg['dist-tags'].latest;
+            }
+            var doc = pkg.versions[version];
+            var modules = {};
+
+            if (doc.dependencies) {
+                modules = doc.dependencies;
+            }
+            // Ignore devDependencies for now
+
+            var deps = Object.keys(modules);
+
+            var depcnt = 0;
+            if (deps.length === 0) {
+                callback();
+            }
+            deps.forEach(function (dep) {
+                _getAllDependencies({name: dep}, function () {
+                    depcnt++;
+                    if (depcnt === deps.length) {
+                        callback(err, allDependencies);
+                    }
+                });
+            });
+        });
+    };
+
     _getAllDependencies(module, function (err, results) {
         var deps = [];
         // Clean up the data for Tom
@@ -58,3 +59,7 @@ var getAllDependencies = function (module, callback) {
 };
 
 module.exports.getAllDependencies = getAllDependencies;
+
+//getAllDependencies({name: 'helmet'}, function () {
+//    console.log(arguments)
+//});
