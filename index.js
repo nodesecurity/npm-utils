@@ -14,7 +14,7 @@ var getAllDependencies = function (module, callback) {
 
         client.get('/' + module.name, function (err, pkg) {
             if (err) {
-                throw err;
+                return callback(err);
             }
 
             allDependencies[module.name] = pkg['dist-tags'].latest;
@@ -50,16 +50,15 @@ var getAllDependencies = function (module, callback) {
 
     _getAllDependencies(module, function (err, results) {
         var deps = [];
-        // Clean up the data for Tom
-        Object.keys(results).forEach(function (key) {
-            deps.push({name: key, version: results[key]});
-        });
+        if (!err && results) {
+            // Clean up the data for Tom
+            Object.keys(results).forEach(function (key) {
+                deps.push({name: key, version: results[key]});
+            });
+        }
         callback(null, deps);
     });
 };
 
 module.exports.getAllDependencies = getAllDependencies;
 
-//getAllDependencies({name: 'helmet'}, function () {
-//    console.log(arguments)
-//});
