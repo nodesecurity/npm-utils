@@ -26,16 +26,16 @@ var getAllDependencies = function (module, callback) {
             var doc = pkg.versions[version];
             var modules = {};
 
-            if (doc.dependencies) {
+            var deps = [];
+            if (doc && doc.dependencies) {
                 modules = doc.dependencies;
+                deps = Object.keys(modules);
             }
             // Ignore devDependencies for now
 
-            var deps = Object.keys(modules);
-
             var depcnt = 0;
             if (deps.length === 0) {
-                callback();
+                callback(null, allDependencies);
             }
             deps.forEach(function (dep) {
                 _getAllDependencies({name: dep}, function () {
@@ -62,3 +62,13 @@ var getAllDependencies = function (module, callback) {
 
 module.exports.getAllDependencies = getAllDependencies;
 
+/*
+    var derp = {
+        name: 'herpmcderp',
+        version: '0.7.6'
+    };
+
+    getAllDependencies(derp, function (err, results) {
+        console.log(results)
+    });
+*/
