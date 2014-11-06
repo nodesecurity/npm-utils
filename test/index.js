@@ -49,17 +49,3 @@ exports['module exists but version doesn\'t'] = function (test) {
     });
 };
 
-/*
-exports['properly error on unknown module of known module'] = function (test) {
-    var module = {
-        name: 'herpmcderp',
-        version: '0.0.6'
-    };
-
-    rsnpm.getAllDependencies(module, function (err, results) {
-        console.log(results)
-        test.equals(3, results.length, 'should have 0 results');
-        test.done();
-    });
-};
-*/
