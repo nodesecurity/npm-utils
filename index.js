@@ -38,12 +38,16 @@ var getAllDependencies = function (module, callback) {
                 callback(null, allDependencies);
             }
             deps.forEach(function (dep) {
-                _getAllDependencies({name: dep}, function () {
-                    depcnt++;
-                    if (depcnt === deps.length) {
-                        callback(err, allDependencies);
-                    }
-                });
+                if (!allDependencies[dep]) {
+                    _getAllDependencies({name: dep}, function () {
+                        depcnt++;
+                        if (depcnt === deps.length) {
+                            callback(err, allDependencies);
+                        }
+                    });
+                } else {
+                    callback(null, allDependencies);
+                }
             });
         });
     };

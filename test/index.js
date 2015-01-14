@@ -49,3 +49,26 @@ exports['module exists but version doesn\'t'] = function (test) {
     });
 };
 
+
+exports['test request'] = function (test) {
+    var module = {
+        name: 'request',
+        version: '2.47.0'
+    };
+
+    rsnpm.getAllDependencies(module, function (err, results) {
+        test.done();
+    });
+
+};
+
+exports['recursive packages'] = function (test) {
+    var module = {
+        name: 'yeoman-generator'
+    };
+
+    rsnpm.getAllDependencies(module, function (err, results) {
+
+        test.done();
+    });
+};
