@@ -1,6 +1,6 @@
 {
   "name": "requiresafe-npm",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "author": "^lift security",
   "dependencies": {
     "async": "^0.9.0",
@@ -27,6 +27,6 @@
     "registry": "https://nlfpm.andyet.net/_private"
   },
   "scripts": {
-    "test": "node_modules/nodeunit/bin/nodeunit test/index.js"
+    "test": "tape test/*"
   }
 }

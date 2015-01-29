@@ -39,6 +39,8 @@ function _savePackageDependencies(packageJson, targetObject, parent, cb) {
 
     if (!targetObject[moduleString]) {
         targetObject[moduleString] = {
+            name: packageJson.name,
+            version: packageJson.version,
             parents: [],
             children: [],
             source: 'npm'
@@ -64,6 +66,8 @@ function _savePackageDependencies(packageJson, targetObject, parent, cb) {
                         var vString = dep + '@' + deps[dep];
                         if (!targetObject[vString]) {
                             targetObject[vString] = {
+                                name: dep,
+                                version: deps[dep],
                                 parents: [],
                                 children: [],
                                 source: 'unknown'
