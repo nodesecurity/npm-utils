@@ -1,10 +1,18 @@
 {
   "name": "requiresafe-npm",
   "version": "1.0.3",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "node_modules/nodeunit/bin/nodeunit test/index.js"
+  "author": "^lift security",
+  "dependencies": {
+    "async": "^0.9.0",
+    "semver": "^4.2.0",
+    "silent-npm-registry-client": "0.0.1"
+  },
+  "devDependencies": {
+    "jshint": "^2.5.8",
+    "precommit-hook": "^1.0.7",
+    "tape": "^3.4.0",
+    "tape-suite": "^0.2.1",
+    "underscore": "^1.7.0"
   },
   "keywords": [
     "requireSafe",
@@ -13,17 +21,12 @@
     "package",
     "shrinkwrap"
   ],
-  "author": "^lift security",
   "license": "ISC",
-  "dependencies": {
-    "silent-npm-registry-client": "0.0.1"
-  },
-  "devDependencies": {
-    "nodeunit": "^0.9.0",
-    "jshint": "^2.5.8",
-    "precommit-hook": "^1.0.7"
-  },
+  "main": "index.js",
   "publishConfig": {
     "registry": "https://nlfpm.andyet.net/_private"
+  },
+  "scripts": {
+    "test": "node_modules/nodeunit/bin/nodeunit test/index.js"
   }
 }
