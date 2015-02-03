@@ -27,6 +27,10 @@ getPackageDependencies(JSON.parse(fs.readFileSync('./package.json')), function (
 });
 ```
 
+### getModuleMaintainers = function (module, callback)
+
+Get an array of maintainers from a specifc module / version.
+
 ## depTree format
 
 Many of the functions return a `depTree` representing the full dependency tree. This is in a format that's easier to traverse than a full tree. Each module in the full heirarchy has a key in the object of `module@version`. It's value is an object with `parents`, `children` and `source`.

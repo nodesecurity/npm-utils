@@ -113,20 +113,21 @@ function getPackageDependencies(package, cb) {
     });
 }
 
+
+function getModuleMaintainers(module, cb) {
+    getPackageJson(module, function (err, pkg) {
+        if (err) {
+            return cb(err);
+        }
+        cb(err, pkg.maintainers || []);
+    });
+}
+
 module.exports = {
     getModuleDependencies: getModuleDependencies,
+    getModuleMaintainers: getModuleMaintainers,
     getPackageDependencies: getPackageDependencies,
     getPackageJson: getPackageJson
 };
 
 
-/*
-    var derp = {
-        name: 'herpmcderp',
-        version: '0.7.6'
-    };
-
-    getAllDependencies(derp, function (err, results) {
-        console.log(results)
-    });
-*/
