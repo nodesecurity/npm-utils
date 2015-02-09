@@ -22,7 +22,9 @@ function getPackageJson (module, cb) {
             return cb(err);
         }
 
-        version = semver.maxSatisfying(Object.keys(pkg.versions), module.version) || pkg['dist-tags'].latest;
+        var versions = pkg.versions && Object.keys(pkg.versions) || [];
+
+        version = semver.maxSatisfying(versions, module.version) || pkg['dist-tags'].latest;
         doc = pkg.versions[version];
 
         if (!doc) {
