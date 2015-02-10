@@ -7,6 +7,7 @@
     "url": "https://github.com/liftsecurity/requiresafe-npm.git"
   },
   "dependencies": {
+    "amp-keys": "^1.0.1",
     "async": "^0.9.0",
     "semver": "^4.2.0",
     "silent-npm-registry-client": "0.0.1"

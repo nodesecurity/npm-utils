@@ -1,6 +1,7 @@
 var RegClient = require('silent-npm-registry-client');
 var os = require('os');
 var semver = require('semver');
+var keys = require('amp-keys');
 var async = require('async');
 
 var ASNYC_PARALLELISM = 20;
@@ -22,7 +23,7 @@ function getPackageJson (module, cb) {
             return cb(err);
         }
 
-        version = semver.maxSatisfying(Object.keys(pkg.versions), module.version) || pkg['dist-tags'].latest;
+        version = semver.maxSatisfying(keys(pkg.versions), module.version) || pkg['dist-tags'].latest;
         doc = pkg.versions[version];
 
         if (!doc) {
