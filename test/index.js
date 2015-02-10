@@ -58,6 +58,18 @@ suite('getModuleDependencies', function (s) {
         });
     });
 
+    s.test('handle modules that have been published an unpublished', function (t) {
+        var module = {
+            name: 'requiresafe-data',
+            version: '0.1.0'
+        };
+
+        rsnpm.getModuleDependencies(module, function (err) {
+            t.ok(err, 'should throw error for unpublished');
+            t.end();
+        });
+    });
+
 
     s.test('module exists but version does not', function (t) {
         var module = {
@@ -66,6 +78,7 @@ suite('getModuleDependencies', function (s) {
         };
 
         rsnpm.getModuleDependencies(module, function () {
+            
             //What should happen here?
             t.end();
         });
