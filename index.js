@@ -23,8 +23,17 @@ function getPackageJson (module, cb) {
             return cb(err);
         }
 
-        version = semver.maxSatisfying(keys(pkg.versions), module.version) || pkg['dist-tags'].latest;
-        doc = pkg.versions[version];
+        // try to get a version
+        version = semver.maxSatisfying(keys(pkg.versions), module.version);
+
+        // check dist tags if none found
+        if (!version) {
+            version = pkg['dist-tags'] && pkg['dist-tags'].latest;
+        }
+
+        if (pkg.versions) {
+            doc = pkg.versions[version];
+        }
 
         if (!doc) {
             return cb(new Error('Unknown package ' + toModuleString(module)));
