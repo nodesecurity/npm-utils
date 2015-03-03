@@ -23,6 +23,14 @@ function getPackageJson (module, cb) {
             return cb(err);
         }
 
+        if (pkg.time && pkg.time.unpublished) {
+            var error = new Error('404 - Unpublished module');
+            error.code = 'E404';
+            error.pkgid = module.name;
+
+            return cb(error);
+        }
+
         // try to get a version
         version = semver.maxSatisfying(keys(pkg.versions), module.version);
 
