@@ -121,6 +121,38 @@ function getModuleDependencies(module, cb) {
     });
 }
 
+function getShrinkwrapDependencies(shrinkwrap, cb) {
+    var results = {};
+
+    var _parseModule = function (module, parents, name) {
+
+        var moduleName = (name || module.name) + '@' + module.version;
+        var children = Object.keys(module.dependencies || {}).concat(Object.keys(module.devDependencies || {}));
+
+        if (results[moduleName]) {
+            results[moduleName].parents = results[moduleName].parents.concat(parents);
+        }
+        else {
+            results[moduleName] = {
+                name: name || module.name,
+                version: module.version,
+                parents: parents,
+                children: children,
+                source: 'npm'
+            };
+        }
+
+        for (var i = 0, il = children.length; i < il; ++i) {
+            var child = children[i];
+            _parseModule(module.dependencies[child], [moduleName], child);
+        }
+    };
+
+    _parseModule(shrinkwrap, []);
+
+    return cb(null, results);
+}
+
 function getPackageDependencies(package, cb) {
     var result = {};
     _savePackageDependencies(package, result, undefined, function (err) {
@@ -145,7 +177,8 @@ module.exports = {
     getModuleDependencies: getModuleDependencies,
     getModuleMaintainers: getModuleMaintainers,
     getPackageDependencies: getPackageDependencies,
-    getPackageJson: getPackageJson
+    getPackageJson: getPackageJson,
+    getShrinkwrapDependencies: getShrinkwrapDependencies
 };
 
 
