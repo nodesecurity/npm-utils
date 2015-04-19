@@ -1,7 +1,7 @@
 var RegClient = require('silent-npm-registry-client');
 var os = require('os');
 var semver = require('semver');
-var keys = require('amp-keys');
+var keys = require('lodash').keys;
 var async = require('async');
 
 var ASNYC_PARALLELISM = 20;

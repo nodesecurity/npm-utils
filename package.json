@@ -1,5 +1,5 @@
 {
-  "name": "requiresafe-npm",
+  "name": "@liftsecurity/requiresafe-npm",
   "version": "2.5.1",
   "author": "^lift security",
   "repository": {
@@ -7,8 +7,8 @@
     "url": "https://github.com/liftsecurity/requiresafe-npm.git"
   },
   "dependencies": {
-    "amp-keys": "^1.0.1",
     "async": "^0.9.0",
+    "lodash": "^3.7.0",
     "semver": "^4.3.3",
     "silent-npm-registry-client": "0.0.1"
   },
@@ -28,9 +28,6 @@
   ],
   "license": "ISC",
   "main": "index.js",
-  "publishConfig": {
-    "registry": "https://nlfpm.andyet.net/_private"
-  },
   "scripts": {
     "test": "tape test/*"
   }
