@@ -128,7 +128,7 @@ suite('getPackageDependencies', function (s) {
 
             t.ok(_.find(deps, matches(/async@0\.9/)));
             t.ok(_.find(deps, matches(/semver@4\./)));
-            t.ok(_.find(deps, matches(/silent-npm-registry-client@0\.0\.1/)));
+            t.ok(_.find(deps, matches(/silent-npm-registry-client@1\.0\.0/)));
 
             t.end();
         });
