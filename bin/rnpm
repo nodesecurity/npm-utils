@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+var rnpm = require('../index');
+var fs = require('fs');
+var path = require('path');
+
+
+if (path.basename(process.argv[2]) === 'package.json') {
+    var package = JSON.parse(fs.readFileSync(process.argv[2]));
+    rnpm.getPackageDependencies(package, function (err, result) {
+        Object.keys(result).forEach(function (item) {
+            console.log(item);
+        });
+    });
+} else if (path.basename(process.argv[2] === 'npm-shrinkwrap.json')) {
+    var shrinkwrap = JSON.parse(fs.readFileSync(process.argv[2]));
+    rnpm.getShrinkwrapDependencies(shrinkwrap, function (err, result) {
+        Object.keys(result).forEach(function (item) {
+            console.log(item);
+        });
+    });
+}
