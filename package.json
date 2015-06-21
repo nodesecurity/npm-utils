@@ -1,6 +1,6 @@
 {
   "name": "@liftsecurity/requiresafe-npm",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "author": "^lift security",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
     "rnpm": "bin/rnpm"
   },
   "dependencies": {
-    "async": "^0.9.0",
+    "async": "^1.2.1",
     "lodash": "^3.7.0",
     "semver": "^4.3.3",
     "silent-npm-registry-client": "0.0.1"
