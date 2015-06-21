@@ -169,7 +169,18 @@ function getModuleMaintainers(module, cb) {
         if (err) {
             return cb(err);
         }
+
         cb(err, pkg.maintainers || []);
+    });
+}
+
+function getTarballURL(module, cb) {
+    getPackageJson(module, function (err, pkg) {
+        if (err) {
+            return cb(err);
+        }
+        
+        cb(err, pkg.dist);
     });
 }
 
@@ -178,7 +189,8 @@ module.exports = {
     getModuleMaintainers: getModuleMaintainers,
     getPackageDependencies: getPackageDependencies,
     getPackageJson: getPackageJson,
-    getShrinkwrapDependencies: getShrinkwrapDependencies
+    getShrinkwrapDependencies: getShrinkwrapDependencies,
+    getTarballURL: getTarballURL
 };
 
 
