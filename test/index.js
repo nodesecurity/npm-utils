@@ -126,7 +126,7 @@ suite('getPackageDependencies', function (s) {
             var deps = Object.keys(depTree);
             t.error(err, 'should not error');
 
-            t.ok(_.find(deps, matches(/async@0\.9/)));
+            t.ok(_.find(deps, matches(/async@1\.2\.1/)));
             t.ok(_.find(deps, matches(/semver@4\./)));
             t.ok(_.find(deps, matches(/silent-npm-registry-client@0\.0\.1/)));
 
