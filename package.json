@@ -1,10 +1,10 @@
 {
-  "name": "@liftsecurity/requiresafe-npm",
+  "name": "@requiresafe/npm-utils",
   "version": "2.5.2",
   "author": "^lift security",
   "repository": {
     "type": "git",
-    "url": "https://github.com/liftsecurity/requiresafe-npm.git"
+    "url": "https://github.com/requiresafe/npm-utils.git"
   },
   "bin": {
     "rnpm": "bin/rnpm"
