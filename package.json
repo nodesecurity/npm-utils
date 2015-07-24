@@ -13,7 +13,7 @@
     "async": "^1.2.1",
     "lodash": "^3.7.0",
     "semver": "^4.3.3",
-    "silent-npm-registry-client": "0.0.1"
+    "silent-npm-registry-client": "1.0.0"
   },
   "devDependencies": {
     "jshint": "^2.7.0",
