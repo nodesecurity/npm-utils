@@ -17,14 +17,14 @@ function toModuleString(module) {
 
 function getPackageJson (module, cb) {
     client.get('/' + module.name, function (err, pkg) {
-        var doc, version;
+        var doc, error, version;
 
         if (err) {
             return cb(err);
         }
 
         if (pkg.time && pkg.time.unpublished) {
-            var error = new Error('404 - Unpublished module');
+            error = new Error('404 - Unpublished module');
             error.code = 'E404';
             error.pkgid = module.name;
 
@@ -44,7 +44,11 @@ function getPackageJson (module, cb) {
         }
 
         if (!doc) {
-            return cb(new Error('Unknown package ' + toModuleString(module)));
+            error = new Error('404 - Unknown module');
+            error.code = 'E404';
+            error.pkgid = module.name;
+
+            return cb(error);
         }
 
         cb(null, doc);
