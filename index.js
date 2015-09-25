@@ -6,17 +6,19 @@ var async = require('async');
 
 var ASNYC_PARALLELISM = 20;
 
-var client = new RegClient({
-  registry: 'http://registry.npmjs.org/',
+var options = {
+  registry: 'https://registry.npmjs.org/',
   cache: os.tmpDir() + '/requiresafe'
-});
+}; 
+
+var client = new RegClient(options);
 
 function toModuleString(module) {
     return module.name + '@' + module.version;
 }
 
 function getPackageJson (module, cb) {
-    client.get('/' + module.name, function (err, pkg) {
+    client.get(options.registry + module.name, {}, function (err, pkg) {
         var doc, error, version;
 
         if (err) {
