@@ -1,4 +1,6 @@
-# requireSafe npm utilities
+# requireSafe (+) npm utilities
+
+[![Build Status](https://magnum.travis-ci.com/requiresafe/npm-utils.svg?token=y6kXcG28kZTEjJL8fnHQ)](https://magnum.travis-ci.com/requiresafe/npm-utils)
 
 ## Methods:
 
