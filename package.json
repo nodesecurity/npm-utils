@@ -1,5 +1,5 @@
 {
-  "name": "@requiresafe/npm-utils",
+  "name": "requiresafe-npm-utils",
   "version": "2.5.3",
   "author": "^lift security",
   "repository": {
