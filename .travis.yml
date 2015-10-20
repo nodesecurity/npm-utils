@@ -4,3 +4,6 @@ node_js:
 notifications:
   slack:
     secure: WHt4oNqrHedn0DpnTNs47LHFdFVAsY8wc7dcEYvfHvn2DUwn6lAH5nxeal+e6/qVdtFSeBtbxHWJHOD/wKBi8cBzzXkcBhURzSVKPJRmrtLefpZEZPWWgcmNeoiclxSr8Rm7E3fErUPMRvZEVQQ2EsMn/T5XwtxRNG6AOzM+JCc=
+
+before_script:
+- npm run requiresafe
