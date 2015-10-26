@@ -78,7 +78,7 @@ suite('getModuleDependencies', function (s) {
         };
 
         rsnpm.getModuleDependencies(module, function () {
-            
+
             //What should happen here?
             t.end();
         });
@@ -103,7 +103,8 @@ suite('getModuleDependencies', function (s) {
 
     s.test('recursive packages', function (t) {
         var module = {
-            name: 'yeoman-generator'
+            name: 'yeoman-generator',
+            version: '0.18.0'
         };
 
         rsnpm.getModuleDependencies(module, function (err, depTree) {
@@ -126,8 +127,8 @@ suite('getPackageDependencies', function (s) {
             var deps = Object.keys(depTree);
             t.error(err, 'should not error');
 
-            t.ok(_.find(deps, matches(/async@1\.4\.2/)));
-            t.ok(_.find(deps, matches(/semver@4\./)));
+            t.ok(_.find(deps, matches(/async@1\.5\./)));
+            t.ok(_.find(deps, matches(/semver@5\./)));
             t.ok(_.find(deps, matches(/silent-npm-registry-client@1\.0\.0/)));
 
             t.end();
