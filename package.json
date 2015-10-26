@@ -2,10 +2,6 @@
   "name": "requiresafe-npm-utils",
   "version": "2.5.3",
   "author": "^lift security",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/requiresafe/npm-utils.git"
-  },
   "bin": {
     "rnpm": "bin/rnpm"
   },
@@ -16,22 +12,32 @@
     "silent-npm-registry-client": "1.0.0"
   },
   "devDependencies": {
-    "jshint": "^2.7.0",
-    "precommit-hook": "^3.0.0",
+    "eslint": "^1.7.3",
+    "eslint-config-requiresafe": "^1.0.0",
+    "git-validate": "^2.1.0",
     "tape": "^4.0.0",
     "tape-suite": "^0.2.1",
     "underscore": "^1.8.3"
   },
   "keywords": [
-    "requireSafe",
-    "security",
     "npm",
     "package",
+    "requireSafe",
+    "security",
     "shrinkwrap"
   ],
   "license": "ISC",
   "main": "index.js",
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/requiresafe/npm-utils.git"
+  },
   "scripts": {
+    "lint": "eslint .",
     "test": "tape test/*"
   }
 }
