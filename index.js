@@ -1,3 +1,5 @@
+'use strict';
+
 var RegClient = require('silent-npm-registry-client');
 var os = require('os');
 var semver = require('semver');
@@ -9,194 +11,209 @@ var ASNYC_PARALLELISM = 20;
 var options = {
   registry: 'https://registry.npmjs.org/',
   cache: os.tmpDir() + '/requiresafe'
-}; 
+};
 
 var client = new RegClient(options);
 
-function toModuleString(module) {
-    return module.name + '@' + module.version;
-}
 
-function getPackageJson (module, cb) {
-    client.get(options.registry + module.name, {}, function (err, pkg) {
-        var doc, error, version;
+var toModuleString = function (module) {
 
-        if (err) {
-            return cb(err);
-        }
+  return module.name + '@' + module.version;
+};
 
-        if (pkg.time && pkg.time.unpublished) {
-            error = new Error('404 - Unpublished module');
-            error.code = 'E404';
-            error.pkgid = module.name;
+var getPackageJson = function (module, cb) {
 
-            return cb(error);
-        }
+  client.get(options.registry + module.name, {}, function (err, pkg) {
 
-        // try to get a version
-        version = semver.maxSatisfying(keys(pkg.versions), module.version);
+    var doc, error, version;
 
-        // check dist tags if none found
-        if (!version) {
-            version = pkg['dist-tags'] && pkg['dist-tags'].latest;
-        }
-
-        if (pkg.versions) {
-            doc = pkg.versions[version];
-        }
-
-        if (!doc) {
-            error = new Error('404 - Unknown module');
-            error.code = 'E404';
-            error.pkgid = module.name;
-
-            return cb(error);
-        }
-
-        cb(null, doc);
-    });
-}
-
-function _savePackageDependencies(packageJson, targetObject, parent, cb) {
-    var moduleString = toModuleString(packageJson);
-    var alreadyChecked;
-
-    if (!targetObject[moduleString]) {
-        targetObject[moduleString] = {
-            name: packageJson.name,
-            version: packageJson.version,
-            parents: [],
-            children: [],
-            source: 'npm'
-        };
-    } else {
-        alreadyChecked = true;
+    if (err) {
+      return cb(err);
     }
 
-    if (parent) {
-        targetObject[moduleString].parents.push(parent);
-        targetObject[parent].children.push(moduleString);
+    if (pkg.time && pkg.time.unpublished) {
+      error = new Error('404 - Unpublished module');
+      error.code = 'E404';
+      error.pkgid = module.name;
+
+      return cb(error);
     }
 
-    var deps = packageJson.dependencies || {};
+    // try to get a version
+    version = semver.maxSatisfying(keys(pkg.versions), module.version);
 
-    if (alreadyChecked) {
-        cb();
-    } else {
-        async.eachLimit(Object.keys(deps), ASNYC_PARALLELISM, function(dep, next) {
-            getPackageJson({ name: dep, version: deps[dep] }, function (err, pkg) {
-                if (err) {
-                    if (err.message.match(/404/)) {
-                        var vString = dep + '@' + deps[dep];
-                        if (!targetObject[vString]) {
-                            targetObject[vString] = {
-                                name: dep,
-                                version: deps[dep],
-                                parents: [],
-                                children: [],
-                                source: 'unknown'
-                            };
-                        }
-                        targetObject[vString].parents.push(moduleString);
-                        return next();
-                    } else {
-                        return next(err);
-                    }
-                }
-
-                _savePackageDependencies(pkg, targetObject, moduleString, next);
-            });
-        }, cb);
+    // check dist tags if none found
+    if (!version) {
+      version = pkg['dist-tags'] && pkg['dist-tags'].latest;
     }
-}
 
-function getModuleDependencies(module, cb) {
-    var results = {};
+    if (pkg.versions) {
+      doc = pkg.versions[version];
+    }
 
-    getPackageJson(module, function (err, doc) {
-        if (err) {
-            return cb(err);
-        }
+    if (!doc) {
+      error = new Error('404 - Unknown module');
+      error.code = 'E404';
+      error.pkgid = module.name;
 
-        _savePackageDependencies(doc, results, undefined, function (err) {
-            if (err) {
-                return cb(err);
-            }
-            cb(null, results);
-        });
-    });
-}
+      return cb(error);
+    }
 
-function getShrinkwrapDependencies(shrinkwrap, cb) {
-    var results = {};
+    cb(null, doc);
+  });
+};
 
-    var _parseModule = function (module, parents, name) {
+var _savePackageDependencies = function (packageJson, targetObject, parent, cb) {
 
-        var moduleName = (name || module.name) + '@' + module.version;
-        var children = Object.keys(module.dependencies || {}).concat(Object.keys(module.devDependencies || {}));
+  var moduleString = toModuleString(packageJson);
+  var alreadyChecked;
 
-        if (results[moduleName]) {
-            results[moduleName].parents = results[moduleName].parents.concat(parents);
-        }
-        else {
-            results[moduleName] = {
-                name: name || module.name,
-                version: module.version,
-                parents: parents,
-                children: children,
-                source: 'npm'
-            };
-        }
-
-        for (var i = 0, il = children.length; i < il; ++i) {
-            var child = children[i];
-            _parseModule(module.dependencies[child], [moduleName], child);
-        }
+  if (!targetObject[moduleString]) {
+    targetObject[moduleString] = {
+      name: packageJson.name,
+      version: packageJson.version,
+      parents: [],
+      children: [],
+      source: 'npm'
     };
+  } else {
+    alreadyChecked = true;
+  }
 
-    _parseModule(shrinkwrap, []);
+  if (parent) {
+    targetObject[moduleString].parents.push(parent);
+    targetObject[parent].children.push(moduleString);
+  }
 
-    return cb(null, results);
-}
+  var deps = packageJson.dependencies || {};
 
-function getPackageDependencies(package, cb) {
-    var result = {};
-    _savePackageDependencies(package, result, undefined, function (err) {
+  if (alreadyChecked) {
+    cb();
+  } else {
+    async.eachLimit(Object.keys(deps), ASNYC_PARALLELISM, function (dep, next) {
+
+      getPackageJson({ name: dep, version: deps[dep] }, function (err, pkg) {
+
         if (err) {
-            return cb(err);
+          if (err.message.match(/404/)) {
+            var vString = dep + '@' + deps[dep];
+            if (!targetObject[vString]) {
+              targetObject[vString] = {
+                name: dep,
+                version: deps[dep],
+                parents: [],
+                children: [],
+                source: 'unknown'
+              };
+            }
+            targetObject[vString].parents.push(moduleString);
+            return next();
+          }
+
+          return next(err);
         }
-        return cb(null, result);
+
+        _savePackageDependencies(pkg, targetObject, moduleString, next);
+      });
+    }, cb);
+  }
+};
+
+var getModuleDependencies = function (module, cb) {
+
+  var results = {};
+
+  getPackageJson(module, function (err, doc) {
+
+    if (err) {
+      return cb(err);
+    }
+
+    _savePackageDependencies(doc, results, undefined, function (err) {
+
+      if (err) {
+        return cb(err);
+      }
+      cb(null, results);
     });
-}
+  });
+};
 
+var getShrinkwrapDependencies = function (shrinkwrap, cb) {
 
-function getModuleMaintainers(module, cb) {
-    getPackageJson(module, function (err, pkg) {
-        if (err) {
-            return cb(err);
-        }
+  var results = {};
 
-        cb(err, pkg.maintainers || []);
-    });
-}
+  var _parseModule = function (module, parents, name) {
 
-function getTarballURL(module, cb) {
-    getPackageJson(module, function (err, pkg) {
-        if (err) {
-            return cb(err);
-        }
-        
-        cb(err, pkg.dist);
-    });
-}
+    var moduleName = (name || module.name) + '@' + module.version;
+    var children = Object.keys(module.dependencies || {}).concat(Object.keys(module.devDependencies || {}));
 
-module.exports = {
-    getModuleDependencies: getModuleDependencies,
-    getModuleMaintainers: getModuleMaintainers,
-    getPackageDependencies: getPackageDependencies,
-    getPackageJson: getPackageJson,
-    getShrinkwrapDependencies: getShrinkwrapDependencies,
-    getTarballURL: getTarballURL
+    if (results[moduleName]) {
+      results[moduleName].parents = results[moduleName].parents.concat(parents);
+    }
+    else {
+      results[moduleName] = {
+        name: name || module.name,
+        version: module.version,
+        parents: parents,
+        children: children,
+        source: 'npm'
+      };
+    }
+
+    for (var i = 0, il = children.length; i < il; ++i) {
+      var child = children[i];
+      _parseModule(module.dependencies[child], [moduleName], child);
+    }
+  };
+
+  _parseModule(shrinkwrap, []);
+
+  return cb(null, results);
+};
+
+var getPackageDependencies = function (pkg, cb) {
+
+  var result = {};
+  _savePackageDependencies(pkg, result, undefined, function (err) {
+
+    if (err) {
+      return cb(err);
+    }
+    return cb(null, result);
+  });
 };
 
 
+var getModuleMaintainers = function (module, cb) {
+
+  getPackageJson(module, function (err, pkg) {
+
+    if (err) {
+      return cb(err);
+    }
+
+    cb(err, pkg.maintainers || []);
+  });
+};
+
+var getTarballURL = function (module, cb) {
+
+  getPackageJson(module, function (err, pkg) {
+
+    if (err) {
+      return cb(err);
+    }
+
+    cb(err, pkg.dist);
+  });
+};
+
+module.exports = {
+  getModuleDependencies: getModuleDependencies,
+  getModuleMaintainers: getModuleMaintainers,
+  getPackageDependencies: getPackageDependencies,
+  getPackageJson: getPackageJson,
+  getShrinkwrapDependencies: getShrinkwrapDependencies,
+  getTarballURL: getTarballURL
+};

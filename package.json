@@ -16,8 +16,8 @@
     "silent-npm-registry-client": "1.0.0"
   },
   "devDependencies": {
-    "jshint": "^2.7.0",
-    "precommit-hook": "^3.0.0",
+    "eslint": "^1.7.3",
+    "eslint-config-requiresafe": "^1.0.0",
     "tape": "^4.0.0",
     "tape-suite": "^0.2.1",
     "underscore": "^1.8.3"
@@ -32,6 +32,11 @@
   "license": "ISC",
   "main": "index.js",
   "scripts": {
-    "test": "tape test/*"
-  }
+    "test": "tape test/*",
+    "lint": "eslint ."
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ]
 }
