@@ -1,41 +1,26 @@
-# requireSafe (+) npm utilities
-
-[![Build Status](https://magnum.travis-ci.com/requiresafe/npm-utils.svg?token=y6kXcG28kZTEjJL8fnHQ)](https://magnum.travis-ci.com/requiresafe/npm-utils)
+# node security project npm utilities
 
 ## Methods:
 
-### getModuleDependencies = function (module, callback)
+### getPackageJson = function (module, callback)
 
-Get a [depTree](#deptree-format) for the given module. `module` is an object that must contain a name and may optionally contain a version.
+Return the full package document for the given `module`.
 
-```js
-getModuleDependencies({
-    name: 'helmet',
-    version: '0.2.0' //may also be a semver string, a la "^1.1.0"
-}, function (err, depTree) {
-    console.log(depTree);
-});
-```
+### getShrinkwrapDependencies = function (shrinkwrapJson, callback)
 
-### getPackageDependencies = function (packageJson, callback)
-
-Get a [depTree](#deptree-format) for the module from a full package.json. `packageJson` should be an object from a parsed package.json file (or look like one): required keys: `name`, `version`, `dependencies`.
+Get a [depTree](#deptree-format) for the module from a full npm-shrinkwrap.json. `shrinkwrapJson` should be an object from a parsed npm-shrinkwrap.json file (or look like one): required keys: `name`, `version`, `dependencies`.
 
 ```js
 var fs = require('fs');
 
-getPackageDependencies(JSON.parse(fs.readFileSync('./package.json')), function (err, depTree) {
+getShrinkwrapDependencies(JSON.parse(fs.readFileSync('./npm-shrinkwrap.json')), function (err, depTree) {
     console.log(depTree);
 });
 ```
 
-### getModuleMaintainers = function (module, callback)
+#### depTree format
 
-Get an array of maintainers from a specifc module / version.
-
-## depTree format
-
-Many of the functions return a `depTree` representing the full dependency tree. This is in a format that's easier to traverse than a full tree. Each module in the full heirarchy has a key in the object of `module@version`. It's value is an object with `parents`, `children` and `source`.
+The returned `depTree` representing the full dependency tree object is in a format that's easier to traverse than a full tree. Each module in the full heirarchy has a key in the object of `module@version`. It's value is an object with `parents`, `children` and `source`.
 
 Note that the root module has a key too.
 
