@@ -4,7 +4,7 @@
   "author": "^lift security",
   "dependencies": {
     "semver": "^5.0.3",
-    "silent-npm-registry-client": "1.0.0"
+    "silent-npm-registry-client": "2.0.0"
   },
   "devDependencies": {
     "eslint": "^1.8.0",
