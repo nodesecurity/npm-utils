@@ -16,7 +16,9 @@ var getPackageJson = function (module, cb) {
 
   client.get(options.registry + module.name, {}, function (err, pkg) {
 
-    var doc, error, version;
+    var doc;
+    var error;
+    var version;
 
     if (err) {
       return cb(err);
