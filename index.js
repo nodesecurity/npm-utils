@@ -62,13 +62,13 @@ var getShrinkwrapDependencies = function (shrinkwrap, cb) {
 
     var moduleName = (name || module.name) + '@' + module.version;
     if (results[moduleName]) {
-      results[moduleName].paths.push(path);
+      results[moduleName].paths.push(path.concat([moduleName]));
     }
     else {
       results[moduleName] = {
         name: name || module.name,
         version: module.version,
-        paths: [path]
+        paths: [path.concat([moduleName])]
       };
     }
 
