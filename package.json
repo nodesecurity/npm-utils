@@ -1,9 +1,8 @@
 {
   "name": "nodesecurity-npm-utils",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "author": "^lift security",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^2.13.1",
     "eslint-config-nodesecurity": "^1.0.0",
