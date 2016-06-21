@@ -4,10 +4,12 @@
   "author": "^lift security",
   "dependencies": {},
   "devDependencies": {
+    "code": "^3.0.1",
     "eslint": "^2.13.1",
     "eslint-config-nodesecurity": "^1.0.0",
     "eslint-plugin-hapi": "^4.0.0",
-    "git-validate": "^2.1.0"
+    "git-validate": "^2.1.0",
+    "lab": "^10.8.2"
   },
   "keywords": [
     "npm",
@@ -26,6 +28,7 @@
     "url": "https://github.com/nodesecurity/npm-utils.git"
   },
   "scripts": {
+    "test": "lab -c",
     "lint": "eslint ."
   }
 }

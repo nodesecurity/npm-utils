@@ -1,12 +1,12 @@
 'use strict';
 
-var getShrinkwrapDependencies = function (shrinkwrap, cb) {
+const getShrinkwrapDependencies = function (shrinkwrap, cb) {
 
-  var results = {};
+  const results = {};
 
-  var _parseModule = function (module, path, name) {
+  const _parseModule = function (module, path, name) {
 
-    var moduleName = (name || module.name) + '@' + module.version;
+    const moduleName = `${name || module.name}@${module.version}`;
     if (results[moduleName]) {
       results[moduleName].paths.push(path.concat([moduleName]));
     }
@@ -18,9 +18,9 @@ var getShrinkwrapDependencies = function (shrinkwrap, cb) {
       };
     }
 
-    var children = Object.keys(module.dependencies || {});
-    for (var i = 0, il = children.length; i < il; ++i) {
-      var child = children[i];
+    const children = Object.keys(module.dependencies || {});
+    for (let i = 0, il = children.length; i < il; ++i) {
+      const child = children[i];
       _parseModule(module.dependencies[child], path.concat([moduleName]), child);
     }
   };
