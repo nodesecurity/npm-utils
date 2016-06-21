@@ -3,11 +3,9 @@
   "version": "4.0.1",
   "author": "^lift security",
   "dependencies": {
-    "semver": "^5.0.3",
-    "silent-npm-registry-client": "2.0.0"
   },
   "devDependencies": {
-    "eslint": "^1.8.0",
+    "eslint": "^2.13.1",
     "eslint-config-nodesecurity": "^1.0.0",
     "eslint-plugin-hapi": "^4.0.0",
     "git-validate": "^2.1.0"
