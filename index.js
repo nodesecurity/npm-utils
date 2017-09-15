@@ -1,35 +1,41 @@
 'use strict';
 
-const getShrinkwrapDependencies = function (shrinkwrap, cb) {
+const internals = {};
+internals._parseModule = function (module, path, name, results) {
 
-  const results = {};
+  const moduleName = `${name || module.name}@${module.version}`;
 
-  const _parseModule = function (module, path, name) {
+  if (results[moduleName]) {
+    results[moduleName].paths.push(path.concat(moduleName));
+  }
+  else {
+    results[moduleName] = {
+      name: name || module.name,
+      version: module.version,
+      paths: [path.concat(moduleName)]
+    };
+  }
 
-    const moduleName = `${name || module.name}@${module.version}`;
-    if (results[moduleName]) {
-      results[moduleName].paths.push(path.concat([moduleName]));
-    }
-    else {
-      results[moduleName] = {
-        name: name || module.name,
-        version: module.version,
-        paths: [path.concat([moduleName])]
-      };
-    }
+  if (!module.dependencies) {
+    module.dependencies = {};
+  }
 
-    const children = Object.keys(module.dependencies || {});
-    for (let i = 0, il = children.length; i < il; ++i) {
-      const child = children[i];
-      _parseModule(module.dependencies[child], path.concat([moduleName]), child);
-    }
-  };
-
-  _parseModule(shrinkwrap, []);
-
-  return cb(null, results);
+  for (const child in module.dependencies) {
+    internals._parseModule(module.dependencies[child], path.concat(moduleName), child, results);
+  }
 };
 
-module.exports = {
-  getShrinkwrapDependencies: getShrinkwrapDependencies
+exports.getShrinkwrapDependencies = function (shrinkwrap) {
+
+  const results = {};
+  try {
+    internals._parseModule(shrinkwrap, [], null, results);
+  }
+  catch (err) {
+    // $lab:coverage:off$
+    return Promise.reject(err);
+    // $lab:coverage:on$
+  }
+
+  return Promise.resolve(results);
 };
